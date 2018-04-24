@@ -6,7 +6,31 @@ def get_character_movies_from_api(character)
   #make the web request
   all_characters = RestClient.get('http://www.swapi.co/api/people/')
   character_hash = JSON.parse(all_characters)
-  
+  array_movies = character_hash["results"]
+  films_url = []
+
+  array_movies.each do |x|
+
+    if x["name"] == character
+     films_url << x["films"]
+
+   end
+  end
+
+ films_url = films_url.flatten
+ movie_data = []
+ i = 0
+
+while i < films_url.length
+ movie_url_link = RestClient.get(films_url[i])
+ movie_data << JSON.parse(movie_url_link)
+
+ i+=1
+
+end
+movie_data
+
+ # binding.pry
   # iterate over the character hash to find the collection of `films` for the given
   #   `character`
   # collect those film API urls, make a web request to each URL to get the info
@@ -18,15 +42,73 @@ def get_character_movies_from_api(character)
   #  of movies by title. play around with puts out other info about a given film.
 end
 
+
+
+
+
 def parse_character_movies(films_hash)
+  movie_titles = []
+  movie_chars = []
+  films_hash.each do |d|
+
+      movie_titles << d["title"]
+      movie_chars << d["characters"]
+
+  end
+
+   # binding.pry
   # some iteration magic and puts out the movies in a nice list
+i=0
+  while i < movie_titles.length
+   puts  "#{i+1}. Movie Title:"
+   puts  movie_titles[i]
+   i+=1
+   puts "======="
+  end
+
+  num = character_request(movie_titles.length)
+
+  puts "Starring:"
+  movie_chars[num-1].each do |link|
+    data = parse_api(link)
+  puts  data["name"]
 end
+end
+
+#Method to see characters of each movie
+def character_request(number)
+  loop do
+  puts "Would you like to see the cast? If so, please enter the corresponding number!"
+  input = gets.chomp
+
+  if input.to_i <= number && input.to_i > 0
+    return input.to_i
+  else
+    puts "Invalid Input!"
+  end
+
+end
+end
+
+# parse single URL, return hash
+def parse_api(link)
+  movie_data ={}
+  movie_url_link = RestClient.get(link)
+  movie_data = JSON.parse(movie_url_link)
+  # binding.pry
+end
+
+
+
+
+
 
 def show_character_movies(character)
   films_hash = get_character_movies_from_api(character)
   parse_character_movies(films_hash)
 end
 
+# get_character_movies_from_api("luke")
 ## BONUS
 
 # that `get_character_movies_from_api` method is probably pretty long. Does it do more than one job?
