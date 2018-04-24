@@ -5,17 +5,20 @@ require 'pry'
 def get_character_movies_from_api(character)
   #make the web request
   film_array = []
+  films_hash = []
   all_characters = RestClient.get('http://www.swapi.co/api/people/')
   character_hash = JSON.parse(all_characters)
   char_info = character_hash["results"]
   char_info.each do |info_hash|
-    if info_hash["name"] == character
+    if info_hash["name"].downcase == character
       film_array += info_hash["films"]
     end
-    film_array
-    binding.pry
   end
+  film_array.each do |url|
+    films_hashes = RestClient.get(url)
+    films_hash << JSON.parse(films_hashes)
 
+  end
   # iterate over the character hash to find the collection of `films` for the given
   #   `character`
   # collect those film API urls, make a web request to each URL to get the info
@@ -26,13 +29,14 @@ def get_character_movies_from_api(character)
   #  and that method will do some nice presentation stuff: puts out a list
   #  of movies by title. play around with puts out other info about a given film.
 
-
+films_hash
 end
 
 
 def parse_character_movies(films_hash)
-
-
+  films_hash.each do |movie_hash|
+    puts movie_hash["title"]
+  end
 end
 
 def show_character_movies(character)
