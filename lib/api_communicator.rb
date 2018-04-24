@@ -6,14 +6,19 @@ def get_character_movies_from_api(character)
   #make the web request
   all_characters =[]
   char_page = parse_api('http://www.swapi.co/api/people/')
+  #we can try to break once the character is found.
+  #
   while (char_page["next"] != nil)
     all_characters << char_page
     char_page = parse_api (char_page["next"])
 
   end
+  all_characters << char_page
 
   #  RestClient.get('http://www.swapi.co/api/people/')
   # character_hash = JSON.parse(all_characters)
+
+
   array_movies = []
   all_characters.each do |character_hash|
     array_movies << character_hash["results"]
@@ -26,7 +31,7 @@ def get_character_movies_from_api(character)
 while films_url.length == 0
   array_movies.each do |x|
 
-    if x["name"] == character
+    if x["name"].downcase == character
      films_url << x["films"]
 
    end
