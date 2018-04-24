@@ -9,6 +9,9 @@ def get_character_movies_from_api(character)
   array_movies = character_hash["results"]
   films_url = []
 
+
+while films_url.length == 0
+
   array_movies.each do |x|
 
     if x["name"] == character
@@ -16,6 +19,16 @@ def get_character_movies_from_api(character)
 
    end
   end
+
+
+
+
+if films_url.length == 0
+  puts "Theres no such character in this Star Wars Saga, check another galaxy"
+  character = get_character_from_user()
+end
+
+end
 
  films_url = films_url.flatten
  movie_data = []
