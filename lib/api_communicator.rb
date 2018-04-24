@@ -4,10 +4,24 @@ require 'pry'
 
 def get_character_movies_from_api(character)
   #make the web request
-  all_characters = RestClient.get('http://www.swapi.co/api/people/')
-  character_hash = JSON.parse(all_characters)
-  array_movies = character_hash["results"]
+  all_characters =[]
+  char_page = parse_api('http://www.swapi.co/api/people/')
+  while (char_page["next"] != nil)
+    all_characters << char_page
+    char_page = parse_api (char_page["next"])
+
+  end
+
+  #  RestClient.get('http://www.swapi.co/api/people/')
+  # character_hash = JSON.parse(all_characters)
+  array_movies = []
+  all_characters.each do |character_hash|
+    array_movies << character_hash["results"]
+  end
   films_url = []
+  array_movies = array_movies.flatten
+   # binding.pry
+
 
 while films_url.length == 0
   array_movies.each do |x|
