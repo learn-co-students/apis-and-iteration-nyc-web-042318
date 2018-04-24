@@ -9,6 +9,7 @@ def get_character_movies_from_api(character)
   array_movies = character_hash["results"]
   films_url = []
 
+while films_url.length == 0
   array_movies.each do |x|
 
     if x["name"] == character
@@ -16,6 +17,15 @@ def get_character_movies_from_api(character)
 
    end
   end
+
+  if films_url.length == 0
+    puts "No such character in Star Wars, please re-enter"
+    character = get_character_from_user()
+
+  end
+
+end
+
 
  films_url = films_url.flatten
  movie_data = []
@@ -67,7 +77,7 @@ i=0
   end
 
   num = character_request(movie_titles.length)
-
+  puts movie_titles[num-1]
   puts "Starring:"
   movie_chars[num-1].each do |link|
     data = parse_api(link)
