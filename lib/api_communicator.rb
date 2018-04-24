@@ -2,23 +2,43 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
+def make_web_request(url)
+  all_characters=RestClient.get(url)
+  JSON.parse(all_characters)
+end
+
 def get_character_movies_from_api(character)
-  #make the web request
-  all_characters = RestClient.get('http://www.swapi.co/api/people/')
-  character_hash = JSON.parse(all_characters)
-  
-  # iterate over the character hash to find the collection of `films` for the given
-  #   `character`
-  # collect those film API urls, make a web request to each URL to get the info
-  #  for that film
-  # return value of this method should be collection of info about each film.
-  #  i.e. an array of hashes in which each hash reps a given film
-  # this collection will be the argument given to `parse_character_movies`
-  #  and that method will do some nice presentation stuff: puts out a list
-  #  of movies by title. play around with puts out other info about a given film.
+  url = 'http://www.swapi.co/api/people/'
+  film_array=[]
+  character_hash=make_web_request(url)
+  while character_hash["next"] != nil
+    character_hash["results"].each do |second_character_hash|
+      if second_character_hash["name"].downcase == character
+        second_character_hash["films"].each do |film|
+          film_api = RestClient.get(film)
+          film_json = JSON.parse(film_api)
+          film_array.push(film_json)
+        end
+      end
+    end
+    character_hash=make_web_request(character_hash["next"])
+  end
+    character_hash["results"].each do |second_character_hash|
+      if second_character_hash["name"].downcase == character
+        second_character_hash["films"].each do |film|
+          film_api = RestClient.get(film)
+          film_json = JSON.parse(film_api)
+          film_array.push(film_json)
+        end
+      end
+    end
+    return film_array
 end
 
 def parse_character_movies(films_hash)
+  films_hash.each.with_index(1) do |film, index|
+    puts "#{index}. #{film["title"]}"
+  end
   # some iteration magic and puts out the movies in a nice list
 end
 
@@ -27,6 +47,8 @@ def show_character_movies(character)
   parse_character_movies(films_hash)
 end
 
+def get_opening_crawl
+end
 ## BONUS
 
 # that `get_character_movies_from_api` method is probably pretty long. Does it do more than one job?
