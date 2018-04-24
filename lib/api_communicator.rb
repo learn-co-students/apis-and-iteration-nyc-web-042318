@@ -24,9 +24,10 @@ def get_character_movies_from_api(character)
         all_movies = RestClient.get(film)
 
         movie_array = JSON.parse(all_movies)
+        #binding.pry
         movie_array["title"]
         movie_hash = {movie_array["title"] => film}
-        empty_array << movie_hash
+        empty_array << movie_hash if (character == hash["name"].downcase)
         #binding.pry
 #binding.pry
     #binding.pry
@@ -35,20 +36,25 @@ def get_character_movies_from_api(character)
 
     end
   end
-  empty_array = empty_array.uniq
-#binding.pry
+  empty_array
+
 end
 
-# def get_movie(character)
-#   all_characters = RestClient.get('http://www.swapi.co/api/people/')
-#   character_hash = JSON.parse(all_characters)
-#
-#   character_hash["results"].map do |hash|
-#     hash["films"].map do |film|
-#       all_movies = RestClient.get(film)
-#       binding.pry
-#     end
-#   end
+# def get_movie(movie)
+#   all_movies = RestClient("https://www.swapi.co/api/films/#{movie}/")
+#   movies_hash = JSON.parse(all_movies)
+#   binding.pry
+# #   all_characters = RestClient.get('http://www.swapi.co/api/people/')
+# #   character_hash = JSON.parse(all_characters)
+# #
+# #   character_hash["results"].map do |hash|
+# #     hash["films"].map do |film|
+# #       all_movies = RestClient.get(film)
+# #       movie_array = JSON.parse(all_movies)
+# #        movie_array["opening_crawl"]
+# # binding.pry
+# #     end
+# #   end
 # end
 
 
@@ -68,6 +74,16 @@ def show_character_movies(character)
   films_hash = get_character_movies_from_api(character)
   parse_character_movies(films_hash)
 end
+
+# def parse_movie_title(movie_title)
+#
+# end
+#
+# def show_movie_info(movie)
+#   movie_title = get_movie(movie)
+#   parse_movie_title(movie_title)
+# end
+
 
 ## BONUS
 
